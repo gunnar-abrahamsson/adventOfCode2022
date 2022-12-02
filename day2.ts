@@ -1,74 +1,97 @@
 const input = await Deno.readTextFile('./inputs/2.1.txt')
-// const input = `A Y
-// B X
-// C Z`
-enum Elf {
-    stone = 'A',
-    paper = 'B',
-    scissors = 'C',
+
+enum Expected {
+    loss = 'X',
+    draw = 'Y',
+    win = 'Z',
 }
 
-enum Me {
-    stone = 'X',
-    paper = 'Y',
-    scissors = 'Z',
-}
-
-enum round {
+enum Round {
     win = 6,
     draw = 3,
     loss = 0
 }
 
-enum shape {
+enum Shape {
     stone = 1,
     paper = 2,
     scissors = 3,
 }
 const inputs = input.split('\n');
 
+const getShape = (input: string) => {
+    switch(input) {
+        case 'A': {
+            return Shape.stone
+        }
+        case 'B': {
+            return Shape.paper
+        }
+        case 'C': {
+            return Shape.scissors
+        }
+        default: {
+            throw new Error('invalid shape ' + input)
+        }
+    }
+}
 
-const calcScore = (elf: string, me: string) => {
-    if (elf === Elf.paper && me === Me.paper) {
-        return round.draw + shape.paper
-    }
-    if (elf === Elf.stone && me === Me.stone) {
-        return round.draw + shape.stone
-    }
-    if (elf === Elf.scissors && me === Me.scissors) {
-        return round.draw + shape.scissors
-    }
-    
-    if (me === Me.stone && elf === Elf.paper) {
-        return round.loss + shape.stone
+const decrypt = (shape: Shape, expected: string) => {
+
+    if(expected === Expected.draw) {
+        return shape;
     }
 
-    if (me === Me.stone && elf === Elf.scissors) {
-        return round.win + shape.stone
+    if (expected === Expected.win) {
+        switch(shape) {
+            case Shape.stone: {
+                return Shape.paper
+            }
+            case Shape.scissors: {
+                return Shape.stone
+            }
+            case Shape.paper: {
+                return Shape.scissors
+            }
+        }
+    }
+    if (expected === Expected.loss) {
+        switch(shape) {
+            case Shape.stone: {
+                return Shape.scissors
+            }
+            case Shape.scissors: {
+                return Shape.paper
+            }
+            case Shape.paper: {
+                return Shape.stone
+            }
+        }
     }
 
-    if (me === Me.paper && elf === Elf.scissors) {
-        return round.loss + shape.paper
+    throw new Error('Invalid decrtpyt ' + shape + expected)
+}
+
+const calcScore = (elf: string, expected: string) => {
+    if(expected === Expected.draw) {
+        return decrypt(getShape(elf), expected) + Round.draw
     }
-    if (me === Me.paper && elf === Elf.stone) {
-        return round.win + shape.paper
+    if(expected === Expected.loss) {
+        return decrypt(getShape(elf), expected) + Round.loss
+        
     }
-  
-    if (me === Me.scissors && elf === Elf.paper) {
-        return round.win + shape.scissors
+    if(expected === Expected.win) {
+        return decrypt(getShape(elf), expected) + Round.win
+
     }
-    if (me === Me.scissors && elf === Elf.stone) {
-        return round.loss + shape.scissors
-    }
-    throw new Error('Aj aj')
+    throw new Error(`invalid calc', ${elf}, ${expected}`)
 }
 
 const score = inputs.reduce((acc, curr) => {
     const [elf, me] = curr.split(' ')
-    if(!elf) return acc;
+    if(!elf || !me) return acc;
     return acc + calcScore(elf, me);
 }, 0)
 
 console.log(score)
 
-// const
