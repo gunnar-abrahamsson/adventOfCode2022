@@ -24,14 +24,15 @@ const matching = inputs.filter(i => i[0] === 'm').map(i => i.match(/\d+/g));
 const instructions = matching.flatMap(match => match ? [match] : []);
 instructions.forEach(instruction => {
     const [ammount, from, to] = instruction;
-    for (let i = 0; i < +ammount; i++) {
+
         const fromStack = crateMap.get(+from)
         const toStack = crateMap.get(+to);
         if(!fromStack || !toStack) return;
-        const movedCrate = fromStack.shift();
-        movedCrate && crateMap.set(+to, [movedCrate, ...toStack])
+
+        const movedCrate = fromStack.slice(0, +ammount);
+        fromStack.splice(0, +ammount);
+        movedCrate && crateMap.set(+to, [...movedCrate, ...toStack])
         crateMap.set(+from, [...fromStack])
-    }
 })
 
 let answer = '';
