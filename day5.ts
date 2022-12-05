@@ -1,26 +1,23 @@
 const input = await Deno.readTextFile('./inputs/5.txt')
-const inputs = input.split('\n');
-const cratesStrings = inputs.filter(i => i.length === 35);
-
+const [cratesInput, instructionString] = input.split('\n\n');
+const cratesStrings = cratesInput.split('\n')
 const crateMap = new Map<number, string[]>();
 
 for (let i = 0; i < cratesStrings.length - 1; i++) {
     const crateString = cratesStrings[i];
-
     for (let createStack = 1; createStack <= 9; createStack++) {
         crateMap.get(createStack) ? null : crateMap.set(createStack, [])
         const cratePosition = createStack === 1 ? createStack : (1 + 4 * (createStack - 1))
         
         const crate = crateString[cratePosition];
-
-        if(crate.replace(' ', '')) {
+        if(crate?.replace(' ', '')) {
             const copy = crateMap.get(+createStack);
             copy && crateMap.set(createStack, [...copy, crate])
         }
     }
 }
 
-const matching = inputs.filter(i => i[0] === 'm').map(i => i.match(/\d+/g));
+const matching = instructionString.split('\n').map(i => i.match(/\d+/g));
 const instructions = matching.flatMap(match => match ? [match] : []);
 instructions.forEach(instruction => {
     const [ammount, from, to] = instruction;
