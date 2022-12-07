@@ -28,6 +28,9 @@ inputs.forEach((input, i, array) => {
         
     }
     if(+commands[0]) {
+        const root = mapSizes.get('/')
+        mapSizes.set('/', root ? root + +commands[0] : +commands[0])
+
         path.forEach((folder, i, folders) => {
             const folderName = folders.slice(0, i + 1).join('.');
 
@@ -36,13 +39,10 @@ inputs.forEach((input, i, array) => {
         })
     };
 })
-
-console.log([...mapSizes.values()].reduce((acc, curr) => {
-    if (curr > maxValue) {
-        return acc
-    };
-    return acc = acc + curr 
-}, 0))
+const freeSpace = 70000000 - (mapSizes.get('/') || 0);
+const requiredSpace = 30000000
+const smallest = [...mapSizes.values()].sort((a, b) => a - b).find(value => (value + freeSpace) > requiredSpace )
+console.log(smallest)
 
 
 
