@@ -1,58 +1,54 @@
 const inputs = (await Deno.readTextFile('./inputs/9.txt')).split('\n')
 //       X  Y
-const prevH = [0, 0]
 const H = [0, 0]
 const T = [0, 0]
 
 const tailPositions = new Set<string>();
 tailPositions.add('x0y0')
 
-const moveTail = () => {
+const moveTail = (x:number, y:number) => {
     if((T[0] - H[0]) > 1 || (T[0] - H[0]) < -1 ) {
-        T[0] = prevH[0]
-        T[1] = prevH[1]
+        T[0] = x
+        T[1] = y
         tailPositions.add(`x${T[0]}y${T[1]}`)
     }
     if((T[1] - H[1]) > 1 || (T[1] - H[1]) < -1 ) {
-        T[0] = prevH[0]
-        T[1] = prevH[1]
+        T[0] = x
+        T[1] = y
         tailPositions.add(`x${T[0]}y${T[1]}`)
     }
 }
 
-const moveHUp = () => {
-    H[1] = H[1] + 1
-    moveTail();
-    prevH[1] = prevH[1] + 1;
+const moveHUp = (x: number, y:number) => {
+    H[1] = y + 1
+    moveTail(x, y);
 }
-const moveHDown = () => {
-    H[1] = H[1] - 1
-    moveTail();
-    prevH[1] = prevH[1] - 1;
+const moveHDown = (x: number, y:number) => {
+    H[1] = y - 1
+    moveTail(x, y);
 }
-const moveHRight = () => {
-    H[0] = H[0] + 1
-    moveTail();
-    prevH[0] = prevH[0] + 1;
+const moveHRight = (x: number, y:number) => {
+    H[0] = x + 1
+    moveTail(x, y);
 }
-const moveHLeft = () => {
-    H[0] = H[0] - 1
-    moveTail();
-    prevH[0] = prevH[0] - 1;
+const moveHLeft = (x: number, y:number) => {
+    H[0] = x - 1
+    moveTail(x, y);
 }
 
 inputs.forEach((input) => {
     const [direction, step] = input.split(' ');
 
     for (let i = 0; i < +step; i++) {
+        const [x, y] = H
         switch(direction) {
-            case 'U': moveHUp();
+            case 'U': moveHUp(x, y);
             break;
-            case 'R': moveHRight();
+            case 'R': moveHRight(x, y);
             break;
-            case 'D': moveHDown();
+            case 'D': moveHDown(x, y);
             break;
-            case 'L': moveHLeft();
+            case 'L': moveHLeft(x, y);
             break;
         }
     }
