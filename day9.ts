@@ -7,12 +7,8 @@ const tailPositions = new Set<string>();
 tailPositions.add('x0y0')
 
 const moveTail = (x:number, y:number) => {
-    if((T[0] - H[0]) > 1 || (T[0] - H[0]) < -1 ) {
-        T[0] = x
-        T[1] = y
-        tailPositions.add(`x${T[0]}y${T[1]}`)
-    }
-    if((T[1] - H[1]) > 1 || (T[1] - H[1]) < -1 ) {
+    const distance = Math.max(Math.abs(T[0] - H[0]), Math.abs(T[1] - H[1]))
+    if(distance > 1) {
         T[0] = x
         T[1] = y
         tailPositions.add(`x${T[0]}y${T[1]}`)
