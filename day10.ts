@@ -27,7 +27,20 @@ const images = commandCycles.map(comands => comands.map((command, cycle) => {
     return image
 }))
 
-images.forEach(async image => {
-    const message = image.join('');
-    await Deno.stdout.write(new TextEncoder().encode(message + '\n'))
-})
+const write = (char: string) => {
+    return new Promise((resolve) => {
+        Deno.stdout.write(new TextEncoder().encode(char)).then(() => {
+            setTimeout(() => {
+                resolve(char)
+            }, 50)
+        }) 
+    })
+}
+
+
+for (const image in images) {
+    for ( const char in images[image]) {
+        await write(images[image][char])
+    }
+    await Deno.stdout.write(new TextEncoder().encode('\n'))
+}
