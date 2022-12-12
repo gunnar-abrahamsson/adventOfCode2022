@@ -1,14 +1,12 @@
 const inputs = (await Deno.readTextFile('./inputs/12.txt')).split('\n').map((row, y) => row.split(''))
 
-
-
 const getStartingXY = (inputs: string[][]) => {
     let x = 0;
     let y = 0;
     
     inputs.findIndex((row, i) => {
         if(row.find((char, i) => {
-            if(char === 'S') {
+            if(char === 'E') {
                 x = i;
                 return char
             }
@@ -39,8 +37,10 @@ const isVisited = (node?: string) => {
 type Queue = number[][]
 
 const addToQueue = (queue: Queue, graph: string[][], x: number, y: number, px: number, py: number) => {
+    const currentValue = getValue(graph?.[y]?.[x]);
+    const prevValue = getValue(graph?.[py]?.[px]);
 
-    if(!(getValue(graph?.[y]?.[x]) <= getValue(graph?.[py]?.[px]) +  1)) return; 
+    if(!(prevValue <= currentValue + 1)) return;
     if(isVisited(toCord(x,y))) return;
     const alreadyInQueue = queue.find((item) => {
 
@@ -61,7 +61,6 @@ const getNodeValue = (graph: string[][], x: number, y: number) => {
 
 const queue: Queue = [];
 const BFS = (graph: string[][], root: {x: number; y: number}) => {
-    // set with coords 
     queue.push([root.x, root.y]);
     while (queue.length > 0) {
         const current = queue.shift();
@@ -69,7 +68,7 @@ const BFS = (graph: string[][], root: {x: number; y: number}) => {
         const [x, y, px, py] = current;
 
         const nodeValue = getNodeValue(graph, x, y);
-        if(nodeValue === 'E') return current;
+        if(getValue(nodeValue) === 1) return current;
         visited.set(toCord(x, y), toCord(px, py));
 
         // right
