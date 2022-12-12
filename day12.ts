@@ -24,7 +24,6 @@ const getStartingXY = (inputs: string[][]) => {
 const getValue = (char: string) => {
     if(char === 'S') return 1
     if(char === 'E') return 'z'.charCodeAt(0) - 96
-    // console.log(char)
     return char?.charCodeAt(0) - 96;
 } 
 const visited = new Map<string, string | undefined>();
@@ -43,7 +42,14 @@ const addToQueue = (queue: Queue, graph: string[][], x: number, y: number, px: n
 
     if(!(getValue(graph?.[y]?.[x]) <= getValue(graph?.[py]?.[px]) +  1)) return; 
     if(isVisited(toCord(x,y))) return;
-    queue.push([x, y, px, py])
+    const alreadyInQueue = queue.find((item) => {
+
+        const [ix, iy, ipx, ipy] = item;
+        if(x === ix && y === iy && ipx === px && py === ipy) return item
+
+    })
+    if(alreadyInQueue) return;
+    queue.push([x, y, px, py])   
 }
 
 const getNodeValue = (graph: string[][], x: number, y: number) => {
@@ -57,7 +63,6 @@ const queue: Queue = [];
 const BFS = (graph: string[][], root: {x: number; y: number}) => {
     // set with coords 
     queue.push([root.x, root.y]);
-    let i = 0;
     while (queue.length > 0) {
         const current = queue.shift();
         if(!current) throw new Error('empty queue');
@@ -75,14 +80,9 @@ const BFS = (graph: string[][], root: {x: number; y: number}) => {
         addToQueue(queue, graph, x, y + 1, x, y);
         // bottom
         addToQueue(queue, graph, x, y - 1, x, y);
-        if(i % 50 === 0) {
-            console.log(visited.size) 
-        }
-        i = i + 1;
+    
     }
 }
-
-// console.log('BFS', )
 
 const getRange = () => {
     let range = 0;
@@ -100,4 +100,3 @@ const getRange = () => {
 }
 
 console.log(getRange())
-// console.log(getStartingXY(inputs))
