@@ -45,7 +45,15 @@ monkeys.forEach((text, i) => {
     })
 })
 
-for (let i = 1; i <= 20; i++) {
+const cycleLenght = [...monkeysMap.values()].reduce((acc, curr, i ) => {
+    if(i === 0) {
+        return curr.test;
+    }
+    return acc = acc * curr.test;
+}, 0)
+
+for (let i = 1; i <= 10000; i++) {
+   
     monkeysMap.forEach((monkey, monkeyI) => {
         while(monkey.items.length > 0) {
                 monkey.itemsInspected = monkey.itemsInspected + 1;
@@ -54,7 +62,7 @@ for (let i = 1; i <= 20; i++) {
                 if(!item) throw new Error('no item')
                 //inspect
                 const newWorryLevel = doOperation(item, monkey.operator);
-                const boredMonkey = Math.floor(newWorryLevel / 3)
+                const boredMonkey = newWorryLevel % cycleLenght;
                 if(boredMonkey % monkey.test === 0) {
                     const nextMonkey = monkeysMap.get(monkey.ifTrue)
                     nextMonkey?.items.push(boredMonkey)
